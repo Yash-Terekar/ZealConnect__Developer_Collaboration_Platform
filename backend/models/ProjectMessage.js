@@ -1,0 +1,30 @@
+import mongoose from "mongoose";
+
+const projectMessageSchema = new mongoose.Schema(
+  {
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      required: true,
+    },
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    content: { type: String, default: "" },
+    messageType: {
+      type: String,
+      enum: ["text", "version_upload"],
+      default: "text",
+    },
+    versionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProjectVersion",
+    },
+  },
+  { timestamps: true },
+);
+
+const ProjectMessage = mongoose.model("ProjectMessage", projectMessageSchema);
+export default ProjectMessage;
