@@ -556,7 +556,7 @@ const ChatPage = () => {
     <div className="home-body ">
       {/* Notification Popup */}
       {notification && (
-        <div className="fixed top-4 right-4 bg-gradient-to-r from-blue-600 to-blue-900 text-white px-6 py-4 rounded-lg shadow-2xl z-50 max-w-xs animate-pulse">
+        <div className="fixed top-4 right-4 bg-gradient-to-r from-blue-600 to-blue-900 text-white dark:bg-blue-900 px-6 py-4 rounded-lg shadow-2xl z-50 max-w-xs animate-pulse">
           <div className="font-bold mb-1">💬 New Message</div>
           <div className="text-sm text-blue-100 mb-2">
             <span className="font-semibold">{notification.sender}</span> sent a
@@ -755,10 +755,10 @@ const ChatPage = () => {
               <>
                 <div className="chat-header p-6 border-b border-white/20 flex justify-between items-center">
                   <div>
-                    <strong className="chat-name text-2xl text-white">
+                    <strong className="chat-name text-2xl text-light dark:text-white">
                       {currentChatName}
                     </strong>
-                    <span className="text-sm text-white/50 ml-2">
+                    <span className="text-sm text-muted-light dark:text-white/50 ml-2">
                       ({currentChatType === "group" ? "Group" : "Direct"})
                     </span>
                   </div>

@@ -257,13 +257,15 @@ const HomePage = () => {
   };
 
   return (
-    <div className="home-body bg-gradient-to-r from-indigo-800 from-10% via-blue-800 via-30% to-pink-900 to-90% ">
+    <div className="home-body">
       <div className="home-body p-4 md:p-10 mt-10">
         <div className="dashboard-wrapper grid grid-cols-1 lg:grid-cols-[250px_1fr_250px] gap-6 max-w-7xl mx-auto">
           {/* Left Sidebar */}
           <aside className="sidebar order-2 lg:order-1 side-left flex flex-col gap-6">
             <GlassCard>
-              <h3 className="text-lg font-bold mb-4 text-white">🔍 Search</h3>
+              <h3 className="text-lg font-bold mb-4 text-light dark:text-white">
+                🔍 Search
+              </h3>
               <input
                 type="text"
                 placeholder="Search people..."
@@ -286,14 +288,14 @@ const HomePage = () => {
                     setSearchResults([]);
                   }
                 }}
-                className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:bg-white/20 focus:border-primary outline-none"
+                className="w-full p-3 bg-light-hover border border-light dark:bg-white/10 dark:border-white/20 rounded-lg text-light dark:text-white placeholder-light dark:placeholder-white/50 focus:bg-light-hover-strong dark:focus:bg-white/20 focus:border-primary outline-none"
               />
               {searchResults.length > 0 && (
                 <div className="mt-4 max-h-96 overflow-y-auto space-y-2">
                   {searchResults.map((u) => (
                     <div
                       key={u._id}
-                      className="p-3 rounded-lg hover:bg-white/10 transition-all flex items-center justify-between text-white text-sm"
+                      className="p-3 rounded-lg hover:bg-light-hover dark:hover:bg-white/10 transition-all flex items-center justify-between text-light dark:text-white text-sm"
                     >
                       <div className="flex items-center gap-2 flex-1">
                         <div
@@ -307,7 +309,7 @@ const HomePage = () => {
                         />
                         <div className="flex-1 min-w-0">
                           <div className="font-medium truncate">{u.name}</div>
-                          <div className="text-xs text-white/60 truncate">
+                          <div className="text-xs text-muted-light dark:text-white/60 truncate">
                             {u.bio || "No bio"}
                           </div>
                         </div>
@@ -342,12 +344,14 @@ const HomePage = () => {
             </GlassCard>
 
             <GlassCard>
-              <h3 className="text-lg font-bold mb-4 text-white">👥 Friends</h3>
+              <h3 className="text-lg font-bold mb-4 text-light dark:text-white">
+                👥 Friends
+              </h3>
               <div className="space-y-2">
                 {friends.map((friend) => (
                   <div
                     key={friend._id}
-                    className="user-row py-2 px-2 rounded-lg hover:bg-white/10 cursor-pointer text-white flex items-center justify-between transition-all"
+                    className="user-row py-2 px-2 rounded-lg hover:bg-light-hover dark:hover:bg-white/10 cursor-pointer text-light dark:text-white flex items-center justify-between transition-all"
                   >
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <div
@@ -377,14 +381,16 @@ const HomePage = () => {
           {/* Main Feed */}
           <main className="feed-section flex flex-col gap-6 order-1 lg:order-2">
             <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-              <h2 className="text-2xl font-bold text-white">Feed</h2>
+              <h2 className="text-2xl font-bold text-light dark:text-white">
+                Feed
+              </h2>
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => setFeedType("all")}
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${
                     feedType === "all"
                       ? "bg-primary text-white"
-                      : "bg-white/10 hover:bg-white/20 text-white"
+                      : "bg-light-hover dark:bg-white/10 hover:bg-light-hover-strong dark:hover:bg-white/20 text-light dark:text-white"
                   }`}
                 >
                   All Posts
@@ -394,14 +400,14 @@ const HomePage = () => {
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${
                     feedType === "following"
                       ? "bg-primary text-white"
-                      : "bg-white/10 hover:bg-white/20 text-white"
+                      : "bg-light-hover dark:bg-white/10 hover:bg-light-hover-strong dark:hover:bg-white/20 text-light dark:text-white"
                   }`}
                 >
                   Following
                 </button>
                 <button
                   onClick={fetchPosts}
-                  className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm font-medium transition-all"
+                  className="px-4 py-2 bg-light-hover dark:bg-white/10 hover:bg-light-hover-strong dark:hover:bg-white/20 rounded-lg text-light dark:text-white text-sm font-medium transition-all"
                 >
                   🔄 Refresh
                 </button>
@@ -414,13 +420,13 @@ const HomePage = () => {
                   placeholder="What's on your mind?"
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
-                  className="w-full h-20 p-4 bg-white/10 border border-white/20 rounded-xl resize-none text-white placeholder-white/50 mb-4 outline-none"
+                  className="w-full h-20 p-4 bg-light-hover dark:bg-white/10 border border-light dark:border-white/20 rounded-xl resize-none text-light dark:text-white placeholder-light dark:placeholder-white/50 mb-4 outline-none"
                 />
                 <input
                   type="file"
                   accept="image/*,video/*"
                   onChange={(e) => setImage(e.target.files[0])}
-                  className="mb-4 text-white file:bg-primary/80 file:text-white file:border-0 file:rounded-xl file:p-2 hover:file:bg-primary"
+                  className="mb-4 text-light dark:text-white file:bg-primary/80 file:text-white file:border-0 file:rounded-xl file:p-2 hover:file:bg-primary"
                 />
                 <div className="flex gap-3">
                   <button
@@ -442,7 +448,7 @@ const HomePage = () => {
             </GlassCard>
 
             <GlassCard className={`${showCreateGroup ? "" : "hidden"}`}>
-              <h3 className="text-lg font-bold mb-4 text-white">
+              <h3 className="text-lg font-bold mb-4 text-light dark:text-white">
                 Create New Group
               </h3>
               <form onSubmit={handleCreateGroup}>
@@ -451,7 +457,7 @@ const HomePage = () => {
                   placeholder="Group name..."
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
-                  className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 mb-4 outline-none focus:bg-white/20 focus:border-primary"
+                  className="w-full p-3 bg-light-hover dark:bg-white/10 border border-light dark:border-white/20 rounded-lg text-light dark:text-white placeholder-light dark:placeholder-white/50 mb-4 outline-none focus:bg-light-hover-strong dark:focus:bg-white/20 focus:border-primary"
                 />
                 <textarea
                   placeholder="Group description (optional)..."
@@ -507,10 +513,10 @@ const HomePage = () => {
                     }}
                   ></div>
                   <div className="flex-1">
-                    <strong className="text-white block">
+                    <strong className="text-light dark:text-white block">
                       {post.author?.name}
                     </strong>
-                    <span className="text-white/60 text-sm">
+                    <span className="text-muted-light dark:text-white/60 text-sm">
                       {formatTime(post.createdAt)}
                     </span>
                   </div>
@@ -523,7 +529,7 @@ const HomePage = () => {
                       }
                       className={`px-3 py-1 rounded-lg transition-all text-sm font-medium flex items-center gap-1 ${
                         following.has(post.author._id)
-                          ? "bg-white/20 text-white hover:bg-white/30"
+                          ? "bg-light-hover dark:bg-white/20 text-light dark:text-white hover:bg-light-hover-strong dark:hover:bg-white/30"
                           : "bg-primary hover:bg-primaryHover text-white"
                       }`}
                     >
@@ -540,7 +546,9 @@ const HomePage = () => {
                   )}
                 </div>
                 {post.caption && (
-                  <p className="text-white/90 mb-4">{post.caption}</p>
+                  <p className="text-light dark:text-white/90 mb-4">
+                    {post.caption}
+                  </p>
                 )}
                 {post.mediaUrl && (
                   <div className="w-full aspect-video rounded-xl overflow-hidden mb-4">
@@ -559,7 +567,7 @@ const HomePage = () => {
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
                       post.likes?.includes(user._id)
                         ? "bg-red-600 text-white"
-                        : "bg-white/10 text-white/70 hover:bg-white/20"
+                        : "bg-light-hover dark:bg-white/10 text-muted-light dark:text-white/70 hover:bg-light-hover-strong dark:hover:bg-white/20"
                     }`}
                   >
                     <Heart
@@ -575,7 +583,7 @@ const HomePage = () => {
 
                   <button
                     onClick={() => toggleComments(post._id)}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 text-white/70 hover:bg-white/20 transition-all"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-light-hover dark:bg-white/10 text-muted-light dark:text-white/70 hover:bg-light-hover-strong dark:hover:bg-white/20 transition-all"
                   >
                     <MessageCircle size={18} />
                     <span className="text-sm font-medium">
@@ -586,7 +594,7 @@ const HomePage = () => {
 
                 {/* Comments Section */}
                 {showComments[post._id] && (
-                  <div className="border-t border-white/20 pt-4">
+                  <div className="border-t border-light dark:border-white/20 pt-4">
                     {/* Add Comment */}
                     <div className="flex gap-2 mb-4">
                       <input
@@ -604,7 +612,7 @@ const HomePage = () => {
                             handleAddComment(post._id);
                           }
                         }}
-                        className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-primary"
+                        className="flex-1 px-3 py-2 bg-light-hover dark:bg-white/10 border border-light dark:border-white/20 rounded-lg text-light dark:text-white placeholder-light dark:placeholder-white/50 focus:outline-none focus:border-primary"
                       />
                       <button
                         onClick={() => handleAddComment(post._id)}
@@ -628,9 +636,9 @@ const HomePage = () => {
                             }}
                           />
                           <div className="flex-1">
-                            <div className="bg-white/10 rounded-lg px-3 py-2">
+                            <div className="bg-light-hover dark:bg-white/10 rounded-lg px-3 py-2">
                               <div className="flex items-center justify-between">
-                                <span className="text-white font-medium text-sm">
+                                <span className="text-light dark:text-white font-medium text-sm">
                                   {comment.user?.name}
                                 </span>
                                 {comment.user?._id === user._id ||
@@ -639,24 +647,24 @@ const HomePage = () => {
                                     onClick={() =>
                                       handleDeleteComment(post._id, comment._id)
                                     }
-                                    className="text-white/50 hover:text-red-400 text-xs"
+                                    className="text-muted-light dark:text-white/50 hover:text-red-400 text-xs"
                                   >
                                     ✕
                                   </button>
                                 ) : null}
                               </div>
-                              <p className="text-white/80 text-sm mt-1">
+                              <p className="text-light dark:text-white/80 text-sm mt-1">
                                 {comment.text}
                               </p>
                             </div>
-                            <span className="text-white/50 text-xs ml-3">
+                            <span className="text-muted-light dark:text-white/50 text-xs ml-3">
                               {formatTime(comment.createdAt)}
                             </span>
                           </div>
                         </div>
                       ))}
                       {(!post.comments || post.comments.length === 0) && (
-                        <p className="text-white/50 text-sm text-center py-4">
+                        <p className="text-muted-light dark:text-white/50 text-sm text-center py-4">
                           No comments yet. Be the first to comment!
                         </p>
                       )}
@@ -668,7 +676,7 @@ const HomePage = () => {
 
             {posts.length === 0 && (
               <GlassCard className="text-center py-12">
-                <p className="text-white/60 text-lg">
+                <p className="text-muted-light dark:text-white/60 text-lg">
                   {feedType === "following"
                     ? "Follow more people to see their posts!"
                     : "No posts yet. Create the first one!"}
@@ -680,14 +688,14 @@ const HomePage = () => {
           {/* Right Sidebar */}
           <aside className="sidebar order-3 side-right flex flex-col gap-6">
             <GlassCard>
-              <h3 className="text-lg font-bold mb-4 text-white">
+              <h3 className="text-lg font-bold mb-4 text-light dark:text-white">
                 ✨ Suggestions
               </h3>
               <div className="space-y-2">
                 {suggestions.map((suggestedUser) => (
                   <div
                     key={suggestedUser._id}
-                    className="user-row flex justify-between items-center py-3 px-2 rounded-lg hover:bg-white/10 transition-all"
+                    className="user-row flex justify-between items-center py-3 px-2 rounded-lg hover:bg-light-hover dark:hover:bg-white/10 transition-all"
                   >
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <div
@@ -700,10 +708,10 @@ const HomePage = () => {
                         }}
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="text-white text-sm font-medium truncate">
+                        <div className="text-light dark:text-white text-sm font-medium truncate">
                           {suggestedUser.name}
                         </div>
-                        <div className="text-white/50 text-xs truncate">
+                        <div className="text-muted-light dark:text-white/50 text-xs truncate">
                           {suggestedUser.bio || "No bio"}
                         </div>
                       </div>
@@ -716,7 +724,7 @@ const HomePage = () => {
                       }
                       className={`ml-1 px-2 py-1 rounded-lg transition-all text-xs font-medium whitespace-nowrap ${
                         following.has(suggestedUser._id)
-                          ? "bg-white/20 text-white hover:bg-white/30"
+                          ? "bg-light-hover dark:bg-white/20 text-light dark:text-white hover:bg-light-hover-strong dark:hover:bg-white/30"
                           : "bg-primary hover:bg-primaryHover text-white"
                       }`}
                     >
