@@ -26,31 +26,38 @@ connectDB();
 const app = express();
 const httpServer = createServer(app);
 
+// Build flexible CORS options from FRONTEND_URL env (comma-separated) or fallback list
+const rawFrontend =
+  process.env.FRONTEND_URL ||
+  "http://localhost:5173,http://localhost:3000,http://10.130.76.37:3000";
+const allowedOrigins =
+  rawFrontend === "*"
+    ? null
+    : rawFrontend
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+const corsOptions = {
+  origin: allowedOrigins
+    ? function (origin, callback) {
+        // allow requests with no origin like mobile apps or server-to-server
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error("Not allowed by CORS"));
+      }
+    : true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+};
+
 const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.FRONTEND_URL || [
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "http://10.130.76.37:3000",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  },
+  cors: corsOptions,
 });
 
-app.get("/",(req,res)=>{
-  res.send("ZealConnect API is running");
-})
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || [
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "http://10.130.76.37:3000",
-    ],
-    credentials: true,
-  }),
-);
+app.use(cors(corsOptions));
+// handle preflight for all routes
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
