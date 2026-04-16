@@ -38,41 +38,69 @@ const allowedOrigins =
         .map((s) => s.trim())
         .filter(Boolean);
 
+// Helper to check origin allowed
+const isOriginAllowed = (origin) => {
+  // allow requests with no origin (curl, server-to-server)
+  if (!origin) return true;
+  // allow wildcard
+  if (allowedOrigins === null) return true;
+  // allow explicit list
+  if (allowedOrigins.includes(origin)) return true;
+  // allow Vercel preview/deployments if enabled or by default
+  if (origin.endsWith(".vercel.app") || process.env.ALLOW_VERSEL === "true")
+    return true;
+  return false;
+};
+
+// CORS options for express (function-based origin)
 const corsOptions = {
-  origin: allowedOrigins
-    ? function (origin, callback) {
-        // allow requests with no origin like mobile apps or server-to-server
-        if (!origin) {
-          console.log("CORS: no origin (server or non-browser request)");
-          return callback(null, true);
-        }
-        console.log("CORS check origin:", origin);
-        // allow vercel deployments by default if they match .vercel.app
-        if (
-          origin.endsWith(".vercel.app") ||
-          process.env.ALLOW_VERSEL === "true"
-        ) {
-          console.log("CORS: allowing vercel origin", origin);
-          return callback(null, true);
-        }
-        if (allowedOrigins.includes(origin)) {
-          console.log("CORS: allowed origin", origin);
-          return callback(null, true);
-        }
-        console.warn("CORS: rejecting origin", origin);
-        return callback(new Error("Not allowed by CORS"));
-      }
-    : true,
+  origin: function (origin, callback) {
+    const allowed = isOriginAllowed(origin);
+    console.log("CORS check origin:", origin, "allowed:", allowed);
+    callback(null, allowed);
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+};
+
+// Socket.IO cors options (same origin check)
+const ioCorsOptions = {
+  origin: function (origin, callback) {
+    const allowed = isOriginAllowed(origin);
+    console.log("Socket CORS check origin:", origin, "allowed:", allowed);
+    callback(null, allowed);
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 };
 
 const io = new Server(httpServer, {
-  cors: corsOptions,
+  cors: ioCorsOptions,
 });
 
+// Use express cors middleware
 app.use(cors(corsOptions));
-// handle preflight for all routes
+
+// Explicit middleware to set CORS headers for allowed origins (helps with some proxies)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (isOriginAllowed(origin)) {
+    res.header("Access-Control-Allow-Origin", origin || "*");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+    );
+  }
+  // Handle preflight
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
+// handle preflight for all routes (keep for compatibility)
 app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
