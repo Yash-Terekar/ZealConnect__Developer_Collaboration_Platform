@@ -38,6 +38,9 @@ const io = new Server(httpServer, {
   },
 });
 
+app.get("/",(req,res)=>{
+  res.send("ZealConnect API is running");
+})
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || [
