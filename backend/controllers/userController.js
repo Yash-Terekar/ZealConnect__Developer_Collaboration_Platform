@@ -37,7 +37,11 @@ export const updateUser = async (req, res) => {
   if (name) update.name = name;
   if (bio !== undefined) update.bio = bio;
   if (isPrivate !== undefined) update.isPrivate = isPrivate;
-  if (req.file) update.avatar = `/uploads/${req.file.filename}`;
+  if (req.file) {
+    const url = req.file.path || req.file.secure_url || req.file.url;
+    if (!url) return res.status(500).json({ message: "Upload failed" });
+    update.avatar = url;
+  }
   const user = await User.findByIdAndUpdate(id, update, { new: true }).select(
     "-password",
   );
