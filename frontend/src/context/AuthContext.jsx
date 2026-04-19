@@ -44,10 +44,12 @@ export const AuthProvider = ({ children }) => {
       const token = response.data.user._id; // Store the user ID or JWT
       localStorage.setItem("token", token);
       setUser(response.data.user);
-      return true;
+      return { success: true };
     } catch (error) {
       console.error("Login error:", error);
-      return false;
+      const message =
+        error.response?.data?.message || error.message || "Login failed";
+      return { success: false, message };
     }
   };
 
@@ -57,10 +59,12 @@ export const AuthProvider = ({ children }) => {
       const token = response.data.user._id; // Store the user ID or JWT
       localStorage.setItem("token", token);
       setUser(response.data.user);
-      return true;
+      return { success: true };
     } catch (error) {
       console.error("Signup error:", error);
-      return false;
+      const message =
+        error.response?.data?.message || error.message || "Signup failed";
+      return { success: false, message };
     }
   };
 

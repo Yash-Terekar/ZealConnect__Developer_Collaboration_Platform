@@ -12,6 +12,7 @@ const EditProfilePage = () => {
     name: user?.name || "",
     bio: user?.bio || "",
   });
+  const [cropRect, setCropRect] = useState(null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -23,6 +24,44 @@ const EditProfilePage = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const applyCrop = async () => {
+    if (!preview || !avatarFile) return;
+
+    // Create image element from preview data
+    const img = document.createElement("img");
+    img.src = preview;
+    await new Promise((res) => (img.onload = res));
+
+    // Determine crop rectangle: if not set, use center square
+    const cw = img.width;
+    const ch = img.height;
+    const size = Math.min(cw, ch);
+    const sx = cropRect?.sx ?? Math.floor((cw - size) / 2);
+    const sy = cropRect?.sy ?? Math.floor((ch - size) / 2);
+    const sWidth = cropRect?.sWidth ?? size;
+    const sHeight = cropRect?.sHeight ?? size;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 256; // output size
+    canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, 256, 256);
+
+    // Convert canvas to blob and create new File
+    const blob = await new Promise((res) =>
+      canvas.toBlob(res, avatarFile.type),
+    );
+    const croppedFile = new File([blob], avatarFile.name, {
+      type: avatarFile.type,
+    });
+    setAvatarFile(croppedFile);
+
+    // Update preview
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result);
+    reader.readAsDataURL(croppedFile);
   };
 
   const handleSubmit = async (e) => {
@@ -74,11 +113,13 @@ const EditProfilePage = () => {
             </h2>
 
             {/* Avatar Upload */}
-            <div className="edit-avatar mx-auto mb-8">
+            <div className="edit-avatar mx-auto mb-4">
               <div
-                className="profile-pic w-24 h-24 bg-primary rounded-full mx-auto mb-4 cursor-pointer relative overflow-hidden hover:scale-105 transition-transform"
+                className="profile-pic w-28 h-28 bg-primary rounded-full mx-auto mb-4 cursor-pointer relative overflow-hidden hover:scale-105 transition-transform"
                 style={{
                   backgroundImage: preview ? `url(${preview})` : "none",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
               >
                 {!preview && (
@@ -93,6 +134,28 @@ const EditProfilePage = () => {
                 onChange={handleImageChange}
                 className="w-full text-sm text-white file:bg-primary file:text-white file:border-0 file:rounded-lg file:px-4 file:py-2 file:cursor-pointer hover:file:bg-primaryHover"
               />
+              <div className="flex gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={applyCrop}
+                  disabled={!avatarFile}
+                  className="px-3 py-2 bg-primary text-white rounded-lg text-sm"
+                >
+                  Crop & Resize
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreview(null);
+                    setAvatarFile(null);
+                    setCropRect(null);
+                  }}
+                  disabled={!avatarFile}
+                  className="px-3 py-2 border border-white/20 rounded-lg text-sm"
+                >
+                  Reset
+                </button>
+              </div>
             </div>
 
             {/* Inputs */}

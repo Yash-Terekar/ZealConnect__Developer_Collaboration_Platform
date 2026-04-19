@@ -26,32 +26,36 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const success = await login({
+    const result = await login({
       email: formData.email,
       password: formData.password,
     });
-    if (success) {
+    if (result.success) {
       setShowLoginSuccess(true);
       setTimeout(() => {
         setShowLoginSuccess(false);
         navigate("/");
       }, 1500);
+    } else {
+      alert("Login failed: " + result.message);
     }
   };
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    const success = await signup({
+    const result = await signup({
       name: formData.name,
       email: formData.email,
       password: formData.password,
     });
-    if (success) {
+    if (result.success) {
       setShowSignupSuccess(true);
       setTimeout(() => {
         setShowSignupSuccess(false);
         navigate("/");
       }, 1500);
+    } else {
+      alert("Signup failed: " + result.message);
     }
   };
 
