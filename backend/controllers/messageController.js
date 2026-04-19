@@ -39,22 +39,32 @@ export const createMessage = async (req, res) => {
     content: content || "",
   };
 
-  if (req.file) {
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:1234";
-    messageData.mediaUrl = `${backendUrl}/uploads/${req.file.filename}`;
-    messageData.mediaType = req.file.mimetype.startsWith("video")
-      ? "video"
-      : req.file.mimetype.startsWith("image")
-        ? "image"
-        : "file";
-  }
+  try {
+    if (req.file) {
+      // multer-storage-cloudinary sets file.path to the secure_url
+      const url = req.file.path || req.file.secure_url || req.file.url;
+      if (!url) throw new Error("Cloudinary upload missing URL");
+      messageData.mediaUrl = url;
+      const mime = req.file.mimetype || "";
+      messageData.mediaType = mime.startsWith("video")
+        ? "video"
+        : mime.startsWith("image")
+          ? "image"
+          : "file";
+    }
 
-  const message = await Message.create(messageData);
-  const populated = await message.populate(
-    ["sender", "receiver"],
-    "name avatar",
-  );
-  res.status(201).json(populated);
+    const message = await Message.create(messageData);
+    const populated = await message.populate(
+      ["sender", "receiver"],
+      "name avatar",
+    );
+    res.status(201).json(populated);
+  } catch (error) {
+    console.error("Error creating message:", error);
+    res
+      .status(500)
+      .json({ message: error.message || "Failed to create message" });
+  }
 };
 
 export const getChats = async (req, res) => {

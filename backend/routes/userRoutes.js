@@ -17,6 +17,7 @@ import {
   acceptFriendRequest,
   rejectFriendRequest,
 } from "../controllers/userController.js";
+import { storage } from "../config/cloudinary.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,27 +53,8 @@ const BLOCKED_EXTENSIONS = [
   ".o",
 ];
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
-});
-
-const fileFilter = (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase();
-
-  // Only allow image files for avatars
-  if (!ALLOWED_EXTENSIONS.includes(ext)) {
-    return cb(
-      new Error(
-        "Only image files (JPG, PNG, GIF, WebP) are allowed for avatars",
-      ),
-    );
-  }
-
-  cb(null, true);
-};
-
-const upload = multer({ storage, fileFilter });
+// Use cloudinary storage for avatar uploads
+const upload = multer({ storage });
 
 const router = express.Router();
 

@@ -5,16 +5,22 @@ export const createPost = async (req, res) => {
   const { authorId, caption } = req.body;
   if (!authorId) return res.status(400).json({ message: "Author required" });
   const postData = { author: authorId, caption: caption || "" };
-  if (req.file) {
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:1234";
-    postData.mediaUrl = `${backendUrl}/uploads/${req.file.filename}`;
-    postData.mediaType = req.file.mimetype.startsWith("video")
-      ? "video"
-      : "image";
+  try {
+    if (req.file) {
+      const url = req.file.path || req.file.secure_url || req.file.url;
+      if (!url) throw new Error("Cloudinary upload missing URL");
+      postData.mediaUrl = url;
+      postData.mediaType = req.file.mimetype?.startsWith("video")
+        ? "video"
+        : "image";
+    }
+    const post = await Post.create(postData);
+    const populated = await post.populate("author", "name avatar");
+    res.status(201).json(populated);
+  } catch (error) {
+    console.error("Create post error:", error);
+    res.status(500).json({ message: error.message || "Failed to create post" });
   }
-  const post = await Post.create(postData);
-  const populated = await post.populate("author", "name avatar");
-  res.status(201).json(populated);
 };
 
 export const getPosts = async (req, res) => {
@@ -100,11 +106,9 @@ export const deleteComment = async (req, res) => {
 
   // Comment author or post author can delete the comment
   if (comment.user.toString() !== userId && post.author.toString() !== userId) {
-    return res
-      .status(403)
-      .json({
-        message: "Can only delete your own comments or comments on your posts",
-      });
+    return res.status(403).json({
+      message: "Can only delete your own comments or comments on your posts",
+    });
   }
 
   post.comments.pull(commentId);
