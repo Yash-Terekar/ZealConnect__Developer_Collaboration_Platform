@@ -82,16 +82,6 @@ const Navbar = () => {
           {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
-        {/* <Link to="/chat">
-          <button
-            className="px-4 py-2 bg-gradient-to-r from-primary to-secondary hover:shadow-lg text-white rounded-lg font-medium transition-all flex items-center gap-2 text-sm"
-            title="Go to Chat"
-          >
-            <MessageSquare size={18} />
-            <span className="hidden sm:inline">Chat</span>
-          </button>
-        </Link> */}
-
         <Link to="/create-post">
           <button className="px-4 py-2 bg-primary/80 hover:bg-primary text-white rounded-lg font-medium transition-all text-sm">
             ＋ Post
