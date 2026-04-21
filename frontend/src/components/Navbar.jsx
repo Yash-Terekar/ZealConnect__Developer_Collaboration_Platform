@@ -169,7 +169,7 @@ const Navbar = () => {
               }}
               className="w-full text-left px-3 py-2 rounded-md hover:bg-white/5"
             >
-              {isDark ? "Light Mode" : "Dark Mode"}
+              {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
 
             <Link to="/chat" onClick={() => setMobileOpen(false)}>
