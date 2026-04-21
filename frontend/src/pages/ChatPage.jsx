@@ -13,7 +13,7 @@ import {
   Check,
   X,
 } from "lucide-react";
-
+// Hello Ritesh
 const SOCKET_URL =
   import.meta.env.VITE_SOCKET_URL || `http://${window.location.hostname}:1234`;
 
